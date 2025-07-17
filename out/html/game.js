@@ -1,6 +1,9 @@
 (function() {
   var game;
   var ui;
+  var messageQueue = [];
+  var isTyping = false;
+  var currentCharacter = null;
 
   var DateOptions = {hour: 'numeric',
                  minute: 'numeric',
@@ -9,12 +12,244 @@
                  month: 'short',
                  day: 'numeric' };
 
+  // Character profiles for the chat interface
+  var characters = {
+    'narrator': { name: 'Narrator', avatar: 'N', class: 'narration' },
+    'guide': { name: 'Guide', avatar: 'G', class: 'character-1' },
+    'companion': { name: 'Companion', avatar: 'C', class: 'character-2' },
+    'stranger': { name: 'Stranger', avatar: 'S', class: 'character-3' },
+    'user': { name: 'You', avatar: 'Y', class: 'user' }
+  };
+
   var main = function(dendryUI) {
     ui = dendryUI;
     game = ui.game;
 
-    // Add your custom code here.
+    // Initialize chat interface
+    initializeChatInterface();
+    
+    // Override the original content display
+    ui.displayContent = displayChatContent;
+    ui.displayChoices = displayChatChoices;
   };
+
+  function initializeChatInterface() {
+    // Initialize sidebar toggles
+    document.getElementById('progress-toggle').addEventListener('click', toggleProgressSidebar);
+    document.getElementById('context-toggle').addEventListener('click', toggleContextSidebar);
+
+    // Initialize responsive behavior
+    if (window.innerWidth <= 768) {
+      document.getElementById('progress-sidebar').classList.add('hidden-left');
+      document.getElementById('context-sidebar').classList.add('hidden-right');
+    }
+
+    // Handle window resize
+    window.addEventListener('resize', function() {
+      if (window.innerWidth <= 768) {
+        document.getElementById('progress-sidebar').classList.add('hidden-left');
+        document.getElementById('context-sidebar').classList.add('hidden-right');
+      } else {
+        document.getElementById('progress-sidebar').classList.remove('hidden-left', 'show');
+        document.getElementById('context-sidebar').classList.remove('hidden-right', 'show');
+      }
+    });
+  }
+
+  function toggleProgressSidebar() {
+    var sidebar = document.getElementById('progress-sidebar');
+    if (window.innerWidth <= 768) {
+      sidebar.classList.toggle('show');
+    } else {
+      sidebar.classList.toggle('hidden-left');
+    }
+  }
+
+  function toggleContextSidebar() {
+    var sidebar = document.getElementById('context-sidebar');
+    if (window.innerWidth <= 768) {
+      sidebar.classList.toggle('show');
+    } else {
+      sidebar.classList.toggle('hidden-right');
+    }
+  }
+
+  function displayChatContent(content) {
+    var chatContainer = document.getElementById('content');
+    
+    // Parse content and determine message type
+    var messageData = parseContentForChat(content);
+    
+    // Add typing indicator
+    if (messageData.character !== 'user') {
+      showTypingIndicator(messageData.character);
+      
+      // Simulate typing delay
+      setTimeout(function() {
+        hideTypingIndicator();
+        addChatMessage(messageData);
+      }, 1000 + Math.random() * 1000);
+    } else {
+      addChatMessage(messageData);
+    }
+  }
+
+  function parseContentForChat(content) {
+    // Simple content parsing - in a real implementation, you'd have more sophisticated parsing
+    var text = typeof content === 'string' ? content : content.text || '';
+    
+    // Determine character based on content patterns or context
+    var character = 'narrator';
+    if (text.includes('"') || text.includes(':')) {
+      character = 'guide'; // Default for dialogue
+    }
+    
+    // Clean up the text
+    text = text.replace(/^[#\s]+/, '').trim();
+    
+    return {
+      character: character,
+      text: text,
+      timestamp: new Date()
+    };
+  }
+
+  function addChatMessage(messageData) {
+    var chatContainer = document.getElementById('content');
+    var messageDiv = document.createElement('div');
+    messageDiv.className = 'message-bubble ' + messageData.character;
+    
+    var characterInfo = characters[messageData.character] || characters['narrator'];
+    
+    var html = '';
+    
+    // Add profile picture for character messages (not for narration)
+    if (messageData.character !== 'narrator') {
+      html += '<div class="profile-pic ' + characterInfo.class + '">' + characterInfo.avatar + '</div>';
+    }
+    
+    // Add message content
+    html += '<div class="message-content">';
+    if (messageData.character !== 'narrator' && messageData.character !== 'user') {
+      html += '<span class="character-name">' + characterInfo.name + '</span>';
+    }
+    html += messageData.text;
+    html += '</div>';
+    
+    messageDiv.innerHTML = html;
+    chatContainer.appendChild(messageDiv);
+    
+    // Scroll to bottom
+    var chatScrollContainer = document.getElementById('chat-container');
+    chatScrollContainer.scrollTop = chatScrollContainer.scrollHeight;
+    
+    // Update progress if needed
+    updateProgress(messageData);
+  }
+
+  function showTypingIndicator(character) {
+    var chatContainer = document.getElementById('content');
+    var characterInfo = characters[character] || characters['narrator'];
+    
+    var typingDiv = document.createElement('div');
+    typingDiv.className = 'typing-indicator';
+    typingDiv.id = 'typing-indicator';
+    
+    var html = '<div class="profile-pic ' + characterInfo.class + '">' + characterInfo.avatar + '</div>';
+    html += '<div class="typing-dots">';
+    html += '<div class="typing-dot"></div>';
+    html += '<div class="typing-dot"></div>';
+    html += '<div class="typing-dot"></div>';
+    html += '</div>';
+    
+    typingDiv.innerHTML = html;
+    chatContainer.appendChild(typingDiv);
+    
+    // Scroll to bottom
+    var chatScrollContainer = document.getElementById('chat-container');
+    chatScrollContainer.scrollTop = chatScrollContainer.scrollHeight;
+  }
+
+  function hideTypingIndicator() {
+    var typingIndicator = document.getElementById('typing-indicator');
+    if (typingIndicator) {
+      typingIndicator.remove();
+    }
+  }
+
+  function displayChatChoices(choices) {
+    var choicesContainer = document.getElementById('choices-container');
+    choicesContainer.innerHTML = '';
+    
+    if (!choices || choices.length === 0) {
+      choicesContainer.style.display = 'none';
+      return;
+    }
+    
+    choicesContainer.style.display = 'block';
+    
+    choices.forEach(function(choice, index) {
+      var button = document.createElement('button');
+      button.className = 'choice-button';
+      
+      if (choice.canChoose === false) {
+        button.className += ' unavailable';
+        button.disabled = true;
+      }
+      
+      button.textContent = choice.title || choice.text || 'Continue';
+      
+      if (choice.canChoose !== false) {
+        button.addEventListener('click', function() {
+          // Add user message to chat
+          addChatMessage({
+            character: 'user',
+            text: choice.title || choice.text || 'Continue',
+            timestamp: new Date()
+          });
+          
+          // Clear choices
+          choicesContainer.innerHTML = '';
+          choicesContainer.style.display = 'none';
+          
+          // Execute choice
+          if (choice.id) {
+            ui.choose(choice.id);
+          } else if (typeof choice.choose === 'function') {
+            choice.choose();
+          }
+        });
+      }
+      
+      choicesContainer.appendChild(button);
+    });
+  }
+
+  function updateProgress(messageData) {
+    // Simple progress tracking - you can expand this based on your story structure
+    var progressItems = document.querySelectorAll('.progress-item');
+    
+    // Example progress logic
+    if (messageData.text.toLowerCase().includes('adventure') || messageData.text.toLowerCase().includes('quest')) {
+      markProgressComplete(0);
+    }
+    if (messageData.character === 'guide' || messageData.character === 'companion') {
+      markProgressComplete(1);
+    }
+    // Add more progress conditions as needed
+  }
+
+  function markProgressComplete(index) {
+    var progressItems = document.querySelectorAll('.progress-item');
+    if (progressItems[index] && !progressItems[index].classList.contains('completed')) {
+      progressItems[index].classList.add('completed');
+      var icon = progressItems[index].querySelector('[uk-icon]');
+      if (icon) {
+        icon.setAttribute('uk-icon', 'check');
+        icon.className = 'uk-text-success uk-margin-small-right';
+      }
+    }
+  }
 
   // TODO: change this!
   var TITLE = "Full Quest" + '_' + "storyde";
@@ -22,7 +257,7 @@
   window.quickSave = function() {
       var saveString = JSON.stringify(window.dendryUI.dendryEngine.getExportableState());
       localStorage[TITLE+'_save_q'] = saveString;
-      window.alert("Saved.");
+      UIkit.notification('Game saved!', {status: 'success'});
   };
 
   window.saveSlot = function(slot) {
@@ -57,9 +292,9 @@
       if (localStorage[TITLE+'_save_q']) {
           var saveString = localStorage[TITLE+'_save_q'];
           window.dendryUI.dendryEngine.setState(JSON.parse(saveString));
-          window.alert("Loaded.");
+          UIkit.notification('Game loaded!', {status: 'success'});
       } else {
-          window.alert("No save available.");
+          UIkit.notification('No save available.', {status: 'warning'});
       }
   };
 
@@ -68,9 +303,9 @@
           var saveString = localStorage[TITLE+'_save_' + slot];
           window.dendryUI.dendryEngine.setState(JSON.parse(saveString));
           window.hideSaveSlots();
-          window.alert("Loaded.");
+          UIkit.notification('Game loaded!', {status: 'success'});
       } else {
-          window.alert("No save available.");
+          UIkit.notification('No save available.', {status: 'warning'});
       }
   };
 
@@ -79,8 +314,9 @@
           localStorage[TITLE+'_save_' + slot] = '';
           localStorage[TITLE+'_save_timestamp_' + slot] = '';
           window.populateSaveSlots(slot + 1, 2);
+          UIkit.notification('Save deleted.', {status: 'primary'});
       } else {
-          window.alert("No save available.");
+          UIkit.notification('No save available.', {status: 'warning'});
       }
   };
 
@@ -214,19 +450,19 @@
     var animate = window.dendryUI.animate;
     var animate_bg = window.dendryUI.animate_bg;
     if (disable_bg) {
-        $('#backgrounds_no')[0].checked = true;
+        document.getElementById('backgrounds_no').checked = true;
     } else {
-        $('#backgrounds_yes')[0].checked = true;
+        document.getElementById('backgrounds_yes').checked = true;
     }
     if (animate) {
-        $('#animate_yes')[0].checked = true;
+        document.getElementById('animate_yes').checked = true;
     } else {
-        $('#animate_no')[0].checked = true;
+        document.getElementById('animate_no').checked = true;
     }
     if (animate_bg) {
-        $('#animate_bg_yes')[0].checked = true;
+        document.getElementById('animate_bg_yes').checked = true;
     } else {
-        $('#animate_bg_no')[0].checked = true;
+        document.getElementById('animate_bg_no').checked = true;
     }
   };
   
@@ -250,10 +486,17 @@
     
   // This function updates the game sidebar.
   window.updateSidebar = function() {
-      $('#qualities').empty();
+      // Update context sidebar with current game state
+      var contextContent = document.getElementById('context-content');
       var scene = dendryUI.game.scenes.status;
-      var displayContent = dendryUI.dendryEngine._makeDisplayContent(scene.content, true);
-      $('#qualities').append(dendryUI.contentToHTML.convert(displayContent));
+      if (scene) {
+          var displayContent = dendryUI.dendryEngine._makeDisplayContent(scene.content, true);
+          var contextHtml = '<div class="uk-card uk-card-default uk-card-small">';
+          contextHtml += '<div class="uk-card-body">';
+          contextHtml += '<p class="uk-text-small">' + displayContent + '</p>';
+          contextHtml += '</div></div>';
+          contextContent.innerHTML = contextHtml;
+      }
   };
   
   // This function runs on every new content display. Currently, all it does is update the sidebar.
@@ -262,7 +505,7 @@
   };
 
   window.dendryModifyUI = main;
-  console.log("Modifying stats: see dendryUI.dendryEngine.state.qualities");
+  console.log("Chat Messenger Interface Loaded - Full Quest");
 
   window.onload = function() {
     window.dendryUI.loadSettings();
