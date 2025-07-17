@@ -1,195 +1,300 @@
+/* Chat Messenger Interface Styles */
+
+/* Reset and Base Styles */
+* {
+  box-sizing: border-box;
+}
+
 body {
-  font-family: "Minion Pro", Georgia, serif;
-  /*font-size: 1.125em;*/
-  background-color: #f3f3e3;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  margin: 0;
   padding: 0;
-  line-height: 155%;
-  overflow-y: scroll;
+  background-color: #f8f9fa;
+  overflow: hidden;
 }
-header, #content, footer {
-  color: #431;
-  max-width: 540px;
-  margin: 0 auto;
+
+/* Sidebar Styles */
+.sidebar-panel {
+  transition: margin-left 0.3s ease, margin-right 0.3s ease;
+  min-height: 100%;
+  overflow-y: auto;
 }
-footer {
-  margin-top: 1em;
-  font-size: 0.8em;
+
+.sidebar-panel.hidden-left {
+  margin-left: -25%;
 }
-footer a {
-  padding-right: 1em;
+
+.sidebar-panel.hidden-right {
+  margin-right: -25%;
 }
-header {
-  text-align: right
+
+/* Progress Sidebar */
+.progress-item {
+  padding: 8px 0;
+  font-size: 14px;
 }
-#header-links {
-  text-align: left;
+
+.progress-item.completed {
+  color: #28a745;
 }
-#header-links a {
-  padding-right: 1em;
+
+/* Chat Messages Styles */
+.chat-messages {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px 0;
+  min-height: 100%;
 }
-header h1, header h2 {
-  display: inline-block;
-  font-weight: normal;
-  margin: 0;
-  font-size: 1em;
+
+/* Message Bubbles */
+.message-bubble {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  max-width: 80%;
+  animation: messageSlideIn 0.3s ease-out;
 }
-header h1 {
+
+.message-bubble.character {
+  align-self: flex-start;
+}
+
+.message-bubble.user {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+}
+
+.message-bubble.narration {
+  align-self: center;
+  max-width: 90%;
+  justify-content: center;
+}
+
+/* Profile Pictures */
+.profile-pic {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
   font-weight: bold;
+  font-size: 16px;
+  flex-shrink: 0;
+  border: 2px solid #e9ecef;
 }
-header h2:before {
-  content: "by";
-  font-style: italic;
-  padding: 0 0.3em 0 0;
+
+.profile-pic.character-1 {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
 }
-#content {
+
+.profile-pic.character-2 {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.profile-pic.character-3 {
+  background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+}
+
+.profile-pic.user {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* Message Content */
+.message-content {
+  background: white;
+  padding: 12px 16px;
+  border-radius: 18px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
   position: relative;
-  background-color: #f3f3f3;
-  font-size: 1.1em;
-  padding: 1em 1.5em 1.5em 1.5em;
-  box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.2);
+  line-height: 1.4;
+  font-size: 15px;
 }
-#content #read-marker {
-  border: none;
-  border-top: 1px solid #000;
-  height: 1px;
-  width: 20%;
-  position: center;
+
+.message-bubble.character .message-content {
+  background: #f8f9fa;
+  border-bottom-left-radius: 4px;
 }
-#content h1:first-child {
-  margin-top: 0.5em;
+
+.message-bubble.user .message-content {
+  background: #007bff;
+  color: white;
+  border-bottom-right-radius: 4px;
 }
-#content h1 {
-  margin: 2em 0 1em 0;
-  font-size: 1.35em;
-  font-weight: normal;
+
+.message-bubble.narration .message-content {
+  background: #fff3cd;
+  border: 1px solid #ffeaa7;
+  border-radius: 12px;
   text-align: center;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  text-shadow: rgba(255, 255, 255, 0.75) 2px 2px 2px,
-               rgba(0, 0, 0, 0.1) -1px -1px 2px;
+  font-style: italic;
+  color: #856404;
 }
-a {
-  color: #900;
-  text-decoration: none;
-}
-p {
-  margin: 0;
-  margin-bottom: 1em;
-  text-indent: 1em;
-}
-h1 + p {
-  text-indent: 0;
-}
-h1 + p:first-line {
-  font-weight: bold;
-}
-#content h1 + p:first-letter {
-  position: relative;
-  padding-top: 0.16em;
+
+/* Character Names */
+.character-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: #6c757d;
+  margin-bottom: 4px;
   display: block;
-  float: left;
-  font-weight: normal;
-  font-size: 3.2em;
-  line-height: 0.75em;
 }
-p.game-over {
-  border: 2px solid #bbb;
-  padding: 0.5em;
-  margin: 0.5em 0 0 0;
-  border-radius: 4px;
-  color: #999;
+
+/* Choices Styling */
+.choices-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  background: #f8f9fa;
+  border-top: 1px solid #dee2e6;
 }
-ul.choices {
-  border: 2px solid #876;
-  padding: 0;
-  margin: 0.25em 0 0 0;
-  list-style-type: none;
-  border-radius: 4px;
-}
-ul.choices li {
-  border-bottom: 1px solid #876;
-  padding: 0.5em;
-}
-ul.choices li div.subtitle {
-  margin-left: 2em;
-  font-style: italic;
-}
-ul.choices li.unavailable {
-  color: #999;
-  background-color: rgba(0, 0, 0, 0.1) !important;
-  cursor: default !important;
-}
-ul.choices li:hover {
-  background-color: rgba(0, 0, 0, 0.05);
+
+.choice-button {
+  background: white;
+  border: 2px solid #007bff;
+  color: #007bff;
+  padding: 12px 20px;
+  border-radius: 25px;
   cursor: pointer;
-}
-ul.choices li:last-child {
-  border-bottom: none;
-}
-ul.choices a {
-  text-decoration: none;
-}
-blockquote {
-  margin: 1em 2em;
-}
-blockquote.attribution {
-  margin-left: 4em;
-}
-blockquote + blockquote.attribution {
-  margin-top: -1em;
-}
-
-/* sidebar code - This is mostly copied from undum. */
-#mid_panel {
-  margin: 0 16rem;
-}
-#page {
-  margin: 0 auto;
-  position: relative;
-}
-#tools_wrapper {
-  position: absolute;
-  width: 100%;
-  max-width: 69em;
-  left: 0;
-  right: 0;
-  margin: 0 auto;
-}
-.tools {
-  padding: 0.6em;
-  width: 14rem;
-  color: #431;
-  background-color: #f3f3f3;
-  box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.2);
-}
-.tools.left {
-  float: left;
-  left: 0.4em;
-}
-.tools.right {
-  float: right;
-  right: 0.4em;
-}
-#qualities {
-  text-indent: 0;
-  line-height: 1.3em;
-}
-#qualities p {
-  text-indent: 0;
-}
-#qualities h1 {
-  font-size: 1.1em;
-  font-weight: normal;
+  transition: all 0.2s ease;
+  font-size: 14px;
+  font-weight: 500;
   text-align: center;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  text-shadow: rgba(255, 255, 255, 0.75) 2px 2px 2px,
-               rgba(0, 0, 0, 0.1) -1px -1px 2px;
-}
-#qualities h1 + p:first-line {
-  font-weight: normal;
+  text-decoration: none;
+  display: block;
 }
 
+.choice-button:hover {
+  background: #007bff;
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+}
+
+.choice-button:active {
+  transform: translateY(0);
+}
+
+.choice-button.unavailable {
+  background: #f8f9fa;
+  border-color: #dee2e6;
+  color: #6c757d;
+  cursor: not-allowed;
+}
+
+.choice-button.unavailable:hover {
+  background: #f8f9fa;
+  color: #6c757d;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Animations */
+@keyframes messageSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes typing {
+  0%, 60%, 100% {
+    transform: translateY(0);
+  }
+  30% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Typing Indicator */
+.typing-indicator {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 0;
+}
+
+.typing-dots {
+  display: flex;
+  gap: 4px;
+  padding: 12px 16px;
+  background: #f8f9fa;
+  border-radius: 18px;
+  border-bottom-left-radius: 4px;
+}
+
+.typing-dot {
+  width: 8px;
+  height: 8px;
+  background: #6c757d;
+  border-radius: 50%;
+  animation: typing 1.4s infinite;
+}
+
+.typing-dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing-dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+/* Game Over Styles */
+.game-over {
+  text-align: center;
+  padding: 20px;
+  background: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 12px;
+  color: #721c24;
+  margin: 20px 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .sidebar-panel {
+    position: fixed;
+    top: 60px;
+    bottom: 0;
+    z-index: 1000;
+    background: white;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+  
+  .sidebar-panel.show {
+    transform: translateX(0);
+  }
+  
+  #progress-sidebar {
+    left: 0;
+    width: 280px;
+  }
+  
+  #context-sidebar {
+    right: 0;
+    width: 280px;
+  }
+  
+  .message-bubble {
+    max-width: 95%;
+  }
+  
+  .choices-container {
+    padding: 12px;
+  }
+}
+
+/* Legacy Save/Load Modal Styles (keeping original functionality) */
 #save {
     background: rgba(0,0,0,0.7);
     display: none;
@@ -200,16 +305,44 @@ blockquote + blockquote.attribution {
     right: 0;
     bottom: 0;
     left: 0;
-    z-index: 2;
+    z-index: 2000;
 }
+
 #saves_table {
     position: relative;
     max-width: 540px;
     margin: 100px auto;
-    background: rgba(50,50,50,0.7);
-    border: 2px solid;
+    background: rgba(50,50,50,0.9);
+    border: 2px solid #ccc;
     color: white;
+    padding: 20px;
+    border-radius: 8px;
 }
+
+#saves_table td {
+    padding: 8px;
+    border-bottom: 1px solid #666;
+}
+
+#saves_table button {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 8px;
+}
+
+#saves_table button:hover {
+    background: #0056b3;
+}
+
+.save_info {
+    min-width: 10em;
+    font-size: 12px;
+}
+
 .overlay {
     background: rgba(0,0,0,0.7);
     display: none;
@@ -220,136 +353,49 @@ blockquote + blockquote.attribution {
     right: 0;
     bottom: 0;
     left: 0;
-    z-index: 2;
+    z-index: 2000;
     overflow: scroll;
 }
+
 .overlay_top {
     position: relative;
     max-width: 540px;
     margin: 100px auto;
-    background: rgba(50,50,50,0.7);
-    border: 2px solid;
+    background: rgba(50,50,50,0.9);
+    border: 2px solid #ccc;
     color: white;
+    padding: 20px;
+    border-radius: 8px;
 }
-.save_info {
-    min-width: 10em;
-}
-.background {
-    position: fixed;
+
+.overlay_top table {
     width: 100%;
-    height: 100%;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    background-color: #f3f3e3;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-size: cover;
-    overflow: hidden;
-}
-/*
- * This is used for overlaying transparencies
- * only transition on fade-in
- * */
-#bg2 {
-    z-index: -100;
-}
-#bg1 {
-    z-index: -99;
-}
-.b {
-}
-.save_button {
-}
-.delete_button {
 }
 
-/*
- * sprite stuff- feel free to comment out/remove if not using
- */
-img {
-    max-width: 100%;
-    max-height: 100%;
-}
-#contentSpriteContainer {
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  max-width: 62em;
-  left: 0;
-  right: 0;
-  margin: 0 auto;
-  z-index: -97;
-}
-.sprite {
-    position: absolute;
-    width: 180px;
-}
-#topLeftSprite {
-    float: left;
-    top: -1em;
-    left: 0.4em;
-}
-#topRightSprite {
-    float: right;
-    top: -1em;
-    right: 0.4em;
-}
-#bottomLeftSprite {
-    float: left;
-    left: 0.4em;
-    top: 50%;
-}
-#bottomRightSprite {
-    float: right;
-    right: 0.4em;
-    top: 50%;
+.overlay_top td {
+    padding: 8px;
 }
 
-/* smaller screens: hide left margin */
-@media screen and (max-width: 1200px) {
-  .tools {
-      margin-right: 0.4em;
-      margin-left: 0.4em;
-  }
-  #mid_panel {
-      margin-right: 0.4em;
-  }
+.overlay_top button {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
 }
 
-/* mobile: move the stat box to the top if the screen is too small,
- * and reduce font size slightly. */
-@media screen and (max-width: 560px) {
-  #page {
-      position: static;
-  }
-  #content {
-      position: static;
-      font-size: 1em;
-      line-height: 160%;
-      padding: 1em 1em 1.5em 1em;
-  }
-  #qualities {
-      font-size: 1em;
-  }
-  #tools_wrapper {
-    position: static;
-  }
-  .tools {
-      width: 90%;
-      margin: 2em 0 1em 0;
-      margin: 0.4em;
-  }
-  .tools.left {
-      float: none;
-      left: 0;
-  }
-  .tools.right {
-      float: none;
-      right: 0;
-  }
-  #mid_panel {
-      margin: 0 auto;
-  }
+.overlay_top button:hover {
+    background: #0056b3;
+}
+
+/* Hide original Dendry elements that we're replacing */
+header, footer, #mid_panel, #tools_wrapper, #page {
+    display: none !important;
+}
+
+/* Ensure our new layout takes precedence */
+.uk-container {
+    max-width: none !important;
+    padding: 0 !important;
 }

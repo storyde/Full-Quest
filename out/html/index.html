@@ -3,86 +3,116 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Full Quest - storyde - </title>
+    <title>Full Quest - Chat Adventure</title>
+    
+    <!-- UIKit CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.17.11/dist/css/uikit.min.css" />
+    
+    <!-- Custom CSS -->
     <link rel="stylesheet" type="text/css" href="game.css">
+    
+    <!-- UIKit JS -->
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.17.11/dist/js/uikit.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.17.11/dist/js/uikit-icons.min.js"></script>
+    
+    <!-- jQuery and Dendry -->
     <script src="jquery-1.11.1.min.js"></script>
     <script src="core.js"></script>
     <script src="game.js"></script>
   </head>
-  <body>
-    <div class="background" id="bg2">
-    </div>
-
-    <div class="background" id="bg1">
-    </div>
-
-    <!-- Feel free to comment out options that are not being used -->
-    <div id="options" class="overlay" style="display: none;">
-        <div class="overlay_top">
-            <table>
-                <tr>
-                    <td>
-                        <label for="backgrounds_yes">Enable backgrounds</label>
-                    </td>
-                    <td>
-                        <input type="radio" id="backgrounds_yes" name="backgrounds" value="1" onclick="window.enableBg();">
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <label for="backgrounds_no">Disable backgrounds</label>
-                    </td>
-                    <td>
-                        <input type="radio" id="backgrounds_no" name="backgrounds" value="0" onclick="window.disableBg();">
-                    </td>
-                </tr>
-                <tr>
-                    <td> <hr> </td>
-                </tr>
-                <tr>
-                    <td>
-                        <label for="animate_yes">Enable animation</label>
-                    </td>
-                    <td>
-                        <input type="radio" id="animate_yes" name="animate" value="1" onclick="window.enableAnimate();">
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <label for="animate_no">Disable animation</label>
-                    </td>
-                    <td>
-                        <input type="radio" id="animate_no" name="animate" value="0" onclick="window.disableAnimate();">
-                    </td>
-                </tr>
-                <tr>
-                    <td> <hr> </td>
-                </tr>
-                <tr>
-                    <td>
-                        <label for="animate_bg_yes">Enable background animation</label>
-                    </td>
-                    <td>
-                        <input type="radio" id="animate_bg_yes" name="animate_bg" value="1" onclick="window.enableAnimateBg();">
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <label for="animate_bg_no">Disable background animation</label>
-                    </td>
-                    <td>
-                        <input type="radio" id="animate_bg_no" name="animate_bg" value="0" onclick="window.disableAnimateBg();">
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <button onclick="window.hideOptions();">Close</button>
-                    </td>
-                </tr>
-            </table>
+  <body class="uk-background-muted">
+    
+    <!-- Main Container -->
+    <div class="uk-container uk-container-expand uk-height-viewport uk-flex uk-flex-column">
+      
+      <!-- Header -->
+      <header class="uk-background-primary uk-light uk-padding-small">
+        <div class="uk-flex uk-flex-between uk-flex-middle">
+          <div class="uk-flex uk-flex-middle">
+            <h1 class="uk-margin-remove uk-text-bold">Full Quest</h1>
+            <span class="uk-margin-small-left uk-text-small uk-text-muted">Chat Adventure</span>
+          </div>
+          <div class="uk-flex uk-flex-middle">
+            <button id="progress-toggle" class="uk-button uk-button-text uk-light uk-margin-small-right" uk-tooltip="Toggle Progress">
+              <span uk-icon="list"></span>
+            </button>
+            <button id="context-toggle" class="uk-button uk-button-text uk-light uk-margin-small-right" uk-tooltip="Toggle Context">
+              <span uk-icon="info"></span>
+            </button>
+            <button class="uk-button uk-button-text uk-light" onclick="window.showSaveSlots();" uk-tooltip="Save/Load">
+              <span uk-icon="database"></span>
+            </button>
+          </div>
         </div>
+      </header>
+
+      <!-- Main Content Area -->
+      <div class="uk-flex uk-flex-1 uk-overflow-hidden">
+        
+        <!-- Left Sidebar - Progress -->
+        <div id="progress-sidebar" class="uk-width-1-4 uk-background-default uk-padding-small uk-border-right sidebar-panel">
+          <h3 class="uk-heading-small uk-margin-small-bottom">
+            <span uk-icon="check" class="uk-margin-small-right"></span>
+            Progress
+          </h3>
+          <div id="progress-content">
+            <ul class="uk-list uk-list-divider">
+              <li class="progress-item completed">
+                <span uk-icon="check" class="uk-text-success uk-margin-small-right"></span>
+                Started Adventure
+              </li>
+              <li class="progress-item">
+                <span uk-icon="close" class="uk-text-muted uk-margin-small-right"></span>
+                Met First Character
+              </li>
+              <li class="progress-item">
+                <span uk-icon="close" class="uk-text-muted uk-margin-small-right"></span>
+                Made Important Choice
+              </li>
+              <li class="progress-item">
+                <span uk-icon="close" class="uk-text-muted uk-margin-small-right"></span>
+                Discovered Secret
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Chat Area -->
+        <div class="uk-flex-1 uk-flex uk-flex-column uk-background-default">
+          
+          <!-- Chat Messages Container -->
+          <div id="chat-container" class="uk-flex-1 uk-overflow-auto uk-padding-small">
+            <div id="content" class="chat-messages">
+              <!-- Messages will be populated here -->
+            </div>
+          </div>
+
+          <!-- Choices Container -->
+          <div id="choices-container" class="uk-background-muted uk-padding-small uk-border-top">
+            <!-- Choices will appear here -->
+          </div>
+
+        </div>
+
+        <!-- Right Sidebar - Context -->
+        <div id="context-sidebar" class="uk-width-1-4 uk-background-default uk-padding-small uk-border-left sidebar-panel">
+          <h3 class="uk-heading-small uk-margin-small-bottom">
+            <span uk-icon="info" class="uk-margin-small-right"></span>
+            Your Holistic Context
+          </h3>
+          <div id="context-content">
+            <div class="uk-card uk-card-default uk-card-small uk-margin-small-bottom">
+              <div class="uk-card-body">
+                <p class="uk-text-small uk-text-muted">Context information will appear here as you progress through the story.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
     </div>
 
+    <!-- Save/Load Modal (keeping original functionality) -->
     <div id="save" style="display: none;">
         <table id="saves_table">
             <tr>
@@ -194,50 +224,72 @@
         </table>
     </div>
 
-    <!-- Sprite stuff - feel free to comment out/remove if not using -->
-    <div id="contentSpriteContainer">
-        <div class="sprite" id="topLeftSprite"></div>
-        <div class="sprite" id="topRightSprite"></div>
-
-        <div class="sprite" id="bottomLeftSprite"></div>
-        <div class="sprite" id="bottomRightSprite"></div>
-    </div>
-
-    <div id='page'>
-        <div id="mid_panel">
-            <header>
-                <h1>Game Title</h1>
-                <h2>Your name</h2>
-
-                <div id="header-links">
-                    <!--<a id="stats-link" onclick="window.showStats();" href="#">Status</a>-->
-                    <a onclick="dendryUI.showSaveSlots();" href="#">Save/Load</a>
-                    <a onclick="dendryUI.showOptions();" href="#">Options</a>
-                </div>
-            </header>
-            <div id="tools_wrapper">
-                <div id='stats_sidebar' class='tools left'>
-                    <div id="qualities">
-                    </div>
-                </div>
-            </div>
-
-            <div id='content'>
-
-            </div>
-
-            <footer>
-      <!--
-      <p>
-        <a onclick="window.showSaveSlots();" href="#">Save/Load</a>
-        <a onclick="window.quickSave();" href="#">Quick Save</a>
-        <a onclick="window.quickLoad();" href="#">Quick Load</a>
-      </p>
-
-      Made with <a href="https://github.com/aucchen/dendry">Dendry</a>.
-      -->
-            </footer>
+    <!-- Options Modal (keeping original functionality) -->
+    <div id="options" class="overlay" style="display: none;">
+        <div class="overlay_top">
+            <table>
+                <tr>
+                    <td>
+                        <label for="backgrounds_yes">Enable backgrounds</label>
+                    </td>
+                    <td>
+                        <input type="radio" id="backgrounds_yes" name="backgrounds" value="1" onclick="window.enableBg();">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="backgrounds_no">Disable backgrounds</label>
+                    </td>
+                    <td>
+                        <input type="radio" id="backgrounds_no" name="backgrounds" value="0" onclick="window.disableBg();">
+                    </td>
+                </tr>
+                <tr>
+                    <td> <hr> </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="animate_yes">Enable animation</label>
+                    </td>
+                    <td>
+                        <input type="radio" id="animate_yes" name="animate" value="1" onclick="window.enableAnimate();">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="animate_no">Disable animation</label>
+                    </td>
+                    <td>
+                        <input type="radio" id="animate_no" name="animate" value="0" onclick="window.disableAnimate();">
+                    </td>
+                </tr>
+                <tr>
+                    <td> <hr> </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="animate_bg_yes">Enable background animation</label>
+                    </td>
+                    <td>
+                        <input type="radio" id="animate_bg_yes" name="animate_bg" value="1" onclick="window.enableAnimateBg();">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="animate_bg_no">Disable background animation</label>
+                    </td>
+                    <td>
+                        <input type="radio" id="animate_bg_no" name="animate_bg" value="0" onclick="window.disableAnimateBg();">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <button onclick="window.hideOptions();">Close</button>
+                    </td>
+                </tr>
+            </table>
         </div>
     </div>
+
   </body>
 </html>
