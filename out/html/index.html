@@ -20,118 +20,222 @@
     <script src="core.js"></script>
     <script src="game.js"></script>
   </head>
-  <body class="uk-background-muted">
+  <body class="theme-light">
     
     <!-- Main Container -->
-    <div class="uk-container uk-container-expand uk-height-viewport uk-flex uk-flex-column">
+    <div class="main-container">
       
-      <!-- Header -->
-      <header class="uk-background-primary uk-light uk-padding-small">
-        <div class="uk-flex uk-flex-between uk-flex-middle">
-          <div class="uk-flex uk-flex-middle">
-            <h1 class="uk-margin-remove uk-text-bold">Full Quest</h1>
-            <span class="uk-margin-small-left uk-text-small uk-text-muted">Chat Adventure</span>
+      <!-- Sticky Header -->
+      <header class="sticky-header">
+        <div class="header-content">
+          <div class="header-left">
+            <button id="progress-toggle" class="header-btn" aria-label="Toggle Progress Sidebar" tabindex="0">
+              <span uk-icon="icon: list; ratio: 1.2"></span>
+            </button>
+            <div class="game-title">
+              <h1>Full Quest</h1>
+              <span class="subtitle">Chat Adventure</span>
+            </div>
           </div>
-          <div class="uk-flex uk-flex-middle">
-            <button id="progress-toggle" class="uk-button uk-button-text uk-light uk-margin-small-right" uk-tooltip="Toggle Progress">
-              <span uk-icon="list"></span>
+          <div class="header-right">
+            <button id="context-toggle" class="header-btn" aria-label="Toggle Context Sidebar" tabindex="0">
+              <span uk-icon="icon: info; ratio: 1.2"></span>
             </button>
-            <button id="context-toggle" class="uk-button uk-button-text uk-light uk-margin-small-right" uk-tooltip="Toggle Context">
-              <span uk-icon="info"></span>
+            <button id="theme-toggle" class="header-btn" aria-label="Toggle Dark Mode" tabindex="0">
+              <span uk-icon="icon: sun; ratio: 1.2"></span>
             </button>
-            <button class="uk-button uk-button-text uk-light" onclick="window.showSaveSlots();" uk-tooltip="Save/Load">
-              <span uk-icon="database"></span>
+            <button class="header-btn" onclick="window.showSaveSlots();" aria-label="Save/Load Game" tabindex="0">
+              <span uk-icon="icon: database; ratio: 1.2"></span>
             </button>
           </div>
         </div>
       </header>
 
       <!-- Main Content Area -->
-      <div class="uk-flex uk-flex-1 uk-overflow-hidden">
+      <div class="content-wrapper">
         
         <!-- Left Sidebar - Progress -->
-        <div id="progress-sidebar" class="uk-width-1-4 uk-background-default uk-padding-small uk-border-right sidebar-panel">
-          <h3 class="uk-heading-small uk-margin-small-bottom">
-            <span uk-icon="check" class="uk-margin-small-right"></span>
-            Progress
-          </h3>
-          <div id="progress-content">
-            <ul class="uk-list uk-list-divider">
-              <li class="progress-item completed">
-                <span uk-icon="check" class="uk-text-success uk-margin-small-right"></span>
-                Started Adventure
-              </li>
-              <li class="progress-item">
-                <span uk-icon="close" class="uk-text-muted uk-margin-small-right"></span>
-                Met First Character
-              </li>
-              <li class="progress-item">
-                <span uk-icon="close" class="uk-text-muted uk-margin-small-right"></span>
-                Made Important Choice
-              </li>
-              <li class="progress-item">
-                <span uk-icon="close" class="uk-text-muted uk-margin-small-right"></span>
-                Discovered Secret
-              </li>
-            </ul>
+        <aside id="progress-sidebar" class="sidebar sidebar-left" role="complementary" aria-label="Progress Tracking">
+          <div class="sidebar-header">
+            <div class="sidebar-hero" style="background-image: url('https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=200&fit=crop&auto=format');">
+              <div class="sidebar-hero-overlay">
+                <h3>
+                  <span uk-icon="icon: check; ratio: 1.1" class="sidebar-icon"></span>
+                  Your Journey
+                </h3>
+              </div>
+            </div>
           </div>
-        </div>
+          <div class="sidebar-content">
+            <div class="progress-section">
+              <h4>Story Progress</h4>
+              <ul class="progress-list">
+                <li class="progress-item completed">
+                  <span uk-icon="icon: check" class="progress-icon completed"></span>
+                  <span class="progress-text">Adventure Begins</span>
+                </li>
+                <li class="progress-item">
+                  <span uk-icon="icon: clock" class="progress-icon pending"></span>
+                  <span class="progress-text">First Encounter</span>
+                </li>
+                <li class="progress-item">
+                  <span uk-icon="icon: clock" class="progress-icon pending"></span>
+                  <span class="progress-text">Crucial Decision</span>
+                </li>
+                <li class="progress-item">
+                  <span uk-icon="icon: clock" class="progress-icon pending"></span>
+                  <span class="progress-text">Hidden Truth</span>
+                </li>
+                <li class="progress-item">
+                  <span uk-icon="icon: clock" class="progress-icon pending"></span>
+                  <span class="progress-text">Final Confrontation</span>
+                </li>
+              </ul>
+            </div>
+            
+            <div class="stats-section">
+              <h4>Character Stats</h4>
+              <div class="stat-item">
+                <span class="stat-label">Wisdom</span>
+                <div class="stat-bar">
+                  <div class="stat-fill" style="width: 60%"></div>
+                </div>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Courage</span>
+                <div class="stat-bar">
+                  <div class="stat-fill" style="width: 40%"></div>
+                </div>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Magic</span>
+                <div class="stat-bar">
+                  <div class="stat-fill" style="width: 80%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </aside>
 
         <!-- Chat Area -->
-        <div class="uk-flex-1 uk-flex uk-flex-column uk-background-default">
+        <main class="chat-main" role="main">
+          
+          <!-- Chat Background -->
+          <div class="chat-background" style="background-image: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&h=800&fit=crop&auto=format');"></div>
           
           <!-- Chat Messages Container -->
-          <div id="chat-container" class="uk-flex-1 uk-overflow-auto uk-padding-small">
+          <div id="chat-container" class="chat-container">
             <div id="content" class="chat-messages">
-              <!-- Messages will be populated here -->
+              <!-- Welcome message -->
+              <div class="message-bubble narration">
+                <div class="message-content">
+                  <div class="narration-icon">
+                    <span uk-icon="icon: star; ratio: 1.5"></span>
+                  </div>
+                  Welcome to Full Quest! Your mystical adventure begins here. The ancient realm awaits your choices...
+                </div>
+              </div>
             </div>
           </div>
 
           <!-- Choices Container -->
-          <div id="choices-container" class="uk-background-muted uk-padding-small uk-border-top">
-            <!-- Choices will appear here -->
+          <div id="choices-container" class="choices-container">
+            <!-- Sample choices for demonstration -->
+            <button class="choice-button">
+              <span uk-icon="icon: chevron-right" class="choice-icon"></span>
+              Begin your adventure
+            </button>
+            <button class="choice-button">
+              <span uk-icon="icon: chevron-right" class="choice-icon"></span>
+              Learn about the realm
+            </button>
           </div>
 
-        </div>
+        </main>
 
         <!-- Right Sidebar - Context -->
-        <div id="context-sidebar" class="uk-width-1-4 uk-background-default uk-padding-small uk-border-left sidebar-panel">
-          <h3 class="uk-heading-small uk-margin-small-bottom">
-            <span uk-icon="info" class="uk-margin-small-right"></span>
-            Your Holistic Context
-          </h3>
-          <div id="context-content">
-            <div class="uk-card uk-card-default uk-card-small uk-margin-small-bottom">
-              <div class="uk-card-body">
-                <p class="uk-text-small uk-text-muted">Context information will appear here as you progress through the story.</p>
+        <aside id="context-sidebar" class="sidebar sidebar-right" role="complementary" aria-label="Game Context">
+          <div class="sidebar-header">
+            <div class="sidebar-hero" style="background-image: url('https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=200&fit=crop&auto=format');">
+              <div class="sidebar-hero-overlay">
+                <h3>
+                  <span uk-icon="icon: world; ratio: 1.1" class="sidebar-icon"></span>
+                  Realm Context
+                </h3>
               </div>
             </div>
           </div>
-        </div>
+          <div class="sidebar-content">
+            <div class="context-section">
+              <h4>Current Location</h4>
+              <div class="location-card">
+                <div class="location-image" style="background-image: url('https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=300&h=150&fit=crop&auto=format');"></div>
+                <div class="location-info">
+                  <h5>Mystic Forest</h5>
+                  <p>An ancient woodland filled with magical creatures and hidden secrets.</p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="context-section">
+              <h4>Active Companions</h4>
+              <div class="companion-list">
+                <div class="companion-item">
+                  <div class="companion-avatar guide"></div>
+                  <div class="companion-info">
+                    <span class="companion-name">Eldara</span>
+                    <span class="companion-role">Wise Guide</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="context-section">
+              <h4>Recent Events</h4>
+              <div class="events-list">
+                <div class="event-item">
+                  <span uk-icon="icon: history" class="event-icon"></span>
+                  <span class="event-text">Entered the mystical realm</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </aside>
 
       </div>
     </div>
 
+    <!-- Sidebar Overlay for Mobile -->
+    <div id="sidebar-overlay" class="sidebar-overlay" aria-hidden="true"></div>
+
     <!-- Save/Load Modal (keeping original functionality) -->
-    <div id="save" style="display: none;">
-        <table id="saves_table">
+    <div id="save" class="modal-overlay" style="display: none;" role="dialog" aria-labelledby="save-title" aria-modal="true">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 id="save-title">Save & Load Game</h2>
+          <button onclick="window.hideSaveSlots();" class="modal-close" aria-label="Close">
+            <span uk-icon="icon: close"></span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <table id="saves_table" class="saves-table">
             <tr>
                 <td>Auto-0</td>
                 <td>
-                    <button class="b save_button" id="save_button_a0">Save</button>
+                    <button class="save-button" id="save_button_a0">Save</button>
                 </td>
                 <td>
-                    <button class="b delete_button" id="delete_button_a0">Delete</button>
+                    <button class="delete-button" id="delete_button_a0">Delete</button>
                 </td>
                 <td class="save_info" id="save_info_a0"></td>
             </tr>
             <tr>
                 <td>Auto-1</td>
                 <td>
-                    <button class="b save_button" id="save_button_a1">Save</button>
+                    <button class="save-button" id="save_button_a1">Save</button>
                 </td>
                 <td>
-                    <button class="b delete_button" id="delete_button_a1">Delete</button>
+                    <button class="delete-button" id="delete_button_a1">Delete</button>
                 </td>
                 <td class="save_info" id="save_info_a1"></td>
             </tr>
@@ -139,156 +243,156 @@
             <tr>
                 <td>0</td>
                 <td>
-                    <button class="b save_button" id="save_button_0">Save</button>
+                    <button class="save-button" id="save_button_0">Save</button>
                 </td>
                 <td>
-                    <button class="b delete_button" id="delete_button_0">Delete</button>
+                    <button class="delete-button" id="delete_button_0">Delete</button>
                 </td>
                 <td class="save_info" id="save_info_0"></td>
             </tr>
             <tr>
                 <td>1</td>
                 <td>
-                    <button class="b save_button" id="save_button_1">Save</button>
+                    <button class="save-button" id="save_button_1">Save</button>
                 </td>
                 <td>
-                    <button class="b delete_button" id="delete_button_1">Delete</button>
+                    <button class="delete-button" id="delete_button_1">Delete</button>
                 </td>
                 <td class="save_info" id="save_info_1"></td>
             </tr>
             <tr>
                 <td>2</td>
                 <td>
-                    <button class="b save_button" id="save_button_2">Save</button>
+                    <button class="save-button" id="save_button_2">Save</button>
                 </td>
                 <td>
-                    <button class="b delete_button" id="delete_button_2">Delete</button>
+                    <button class="delete-button" id="delete_button_2">Delete</button>
                 </td>
                 <td class="save_info" id="save_info_2"></td>
             </tr>
             <tr>
                 <td>3</td>
                 <td>
-                    <button class="b save_button" id="save_button_3">Save</button>
+                    <button class="save-button" id="save_button_3">Save</button>
                 </td>
                 <td>
-                    <button class="b delete_button" id="delete_button_3">Delete</button>
+                    <button class="delete-button" id="delete_button_3">Delete</button>
                 </td>
                 <td class="save_info" id="save_info_3"></td>
             </tr>
             <tr>
                 <td>4</td>
                 <td>
-                    <button class="b save_button" id="save_button_4">Save</button>
+                    <button class="save-button" id="save_button_4">Save</button>
                 </td>
                 <td>
-                    <button class="b delete_button" id="delete_button_4">Delete</button>
+                    <button class="delete-button" id="delete_button_4">Delete</button>
                 </td>
                 <td class="save_info" id="save_info_4"></td>
             </tr>
             <tr>
                 <td>5</td>
                 <td>
-                    <button class="b save_button" id="save_button_5">Save</button>
+                    <button class="save-button" id="save_button_5">Save</button>
                 </td>
                 <td>
-                    <button class="b delete_button" id="delete_button_5">Delete</button>
+                    <button class="delete-button" id="delete_button_5">Delete</button>
                 </td>
                 <td class="save_info" id="save_info_5"></td>
             </tr>
             <tr>
                 <td>6</td>
                 <td>
-                    <button class="b save_button" id="save_button_6">Save</button>
+                    <button class="save-button" id="save_button_6">Save</button>
                 </td>
                 <td>
-                    <button class="b delete_button" id="delete_button_6">Delete</button>
+                    <button class="delete-button" id="delete_button_6">Delete</button>
                 </td>
                 <td class="save_info" id="save_info_6"></td>
             </tr>
             <tr>
                 <td>7</td>
                 <td>
-                    <button class="b save_button" id="save_button_7">Save</button>
+                    <button class="save-button" id="save_button_7">Save</button>
                 </td>
                 <td>
-                    <button class="b delete_button" id="delete_button_7">Delete</button>
+                    <button class="delete-button" id="delete_button_7">Delete</button>
                 </td>
                 <td class="save_info" id="save_info_7"></td>
             </tr>
-            <tr>
-                <td>
-                    <button onclick="window.hideSaveSlots();">Close</button>
-                </td>
-            </tr>
-        </table>
+          </table>
+        </div>
+      </div>
     </div>
 
     <!-- Options Modal (keeping original functionality) -->
-    <div id="options" class="overlay" style="display: none;">
-        <div class="overlay_top">
-            <table>
-                <tr>
-                    <td>
-                        <label for="backgrounds_yes">Enable backgrounds</label>
-                    </td>
-                    <td>
-                        <input type="radio" id="backgrounds_yes" name="backgrounds" value="1" onclick="window.enableBg();">
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <label for="backgrounds_no">Disable backgrounds</label>
-                    </td>
-                    <td>
-                        <input type="radio" id="backgrounds_no" name="backgrounds" value="0" onclick="window.disableBg();">
-                    </td>
-                </tr>
-                <tr>
-                    <td> <hr> </td>
-                </tr>
-                <tr>
-                    <td>
-                        <label for="animate_yes">Enable animation</label>
-                    </td>
-                    <td>
-                        <input type="radio" id="animate_yes" name="animate" value="1" onclick="window.enableAnimate();">
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <label for="animate_no">Disable animation</label>
-                    </td>
-                    <td>
-                        <input type="radio" id="animate_no" name="animate" value="0" onclick="window.disableAnimate();">
-                    </td>
-                </tr>
-                <tr>
-                    <td> <hr> </td>
-                </tr>
-                <tr>
-                    <td>
-                        <label for="animate_bg_yes">Enable background animation</label>
-                    </td>
-                    <td>
-                        <input type="radio" id="animate_bg_yes" name="animate_bg" value="1" onclick="window.enableAnimateBg();">
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <label for="animate_bg_no">Disable background animation</label>
-                    </td>
-                    <td>
-                        <input type="radio" id="animate_bg_no" name="animate_bg" value="0" onclick="window.disableAnimateBg();">
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <button onclick="window.hideOptions();">Close</button>
-                    </td>
-                </tr>
-            </table>
+    <div id="options" class="modal-overlay" style="display: none;" role="dialog" aria-labelledby="options-title" aria-modal="true">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 id="options-title">Game Options</h2>
+          <button onclick="window.hideOptions();" class="modal-close" aria-label="Close">
+            <span uk-icon="icon: close"></span>
+          </button>
         </div>
+        <div class="modal-body">
+          <table class="options-table">
+            <tr>
+                <td>
+                    <label for="backgrounds_yes">Enable backgrounds</label>
+                </td>
+                <td>
+                    <input type="radio" id="backgrounds_yes" name="backgrounds" value="1" onclick="window.enableBg();">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="backgrounds_no">Disable backgrounds</label>
+                </td>
+                <td>
+                    <input type="radio" id="backgrounds_no" name="backgrounds" value="0" onclick="window.disableBg();">
+                </td>
+            </tr>
+            <tr>
+                <td> <hr> </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="animate_yes">Enable animation</label>
+                </td>
+                <td>
+                    <input type="radio" id="animate_yes" name="animate" value="1" onclick="window.enableAnimate();">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="animate_no">Disable animation</label>
+                </td>
+                <td>
+                    <input type="radio" id="animate_no" name="animate" value="0" onclick="window.disableAnimate();">
+                </td>
+            </tr>
+            <tr>
+                <td> <hr> </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="animate_bg_yes">Enable background animation</label>
+                </td>
+                <td>
+                    <input type="radio" id="animate_bg_yes" name="animate_bg" value="1" onclick="window.enableAnimateBg();">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="animate_bg_no">Disable background animation</label>
+                </td>
+                <td>
+                    <input type="radio" id="animate_bg_no" name="animate_bg" value="0" onclick="window.disableAnimateBg();">
+                </td>
+            </tr>
+          </table>
+        </div>
+      </div>
     </div>
 
   </body>
