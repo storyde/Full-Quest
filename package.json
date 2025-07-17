@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "dendry": "^0.0.1"
+    "dendry": "github:aucchen/dendry"
   },
   "name": "dendry-game",
   "description": "This is a starter pack for [Dendry](https://github.com/aucchen/dendry) games. It includes a basic game structure.",
