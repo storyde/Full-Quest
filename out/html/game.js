@@ -17,7 +17,7 @@
   };
 
   // TODO: change this!
-  var TITLE = "Game title" + '_' + "Your name";
+  var TITLE = "Full Quest" + '_' + "storyde";
 
   window.quickSave = function() {
       var saveString = JSON.stringify(window.dendryUI.dendryEngine.getExportableState());
