@@ -1,9 +1,6 @@
 (function() {
   var game;
   var ui;
-  var messageQueue = [];
-  var isTyping = false;
-  var currentCharacter = null;
   var currentTheme = 'light';
 
   var DateOptions = {
@@ -18,9 +15,9 @@
   // Character profiles for the chat interface
   var characters = {
     'narrator': { name: 'Narrator', avatar: '✦', class: 'narration' },
-    'guide': { name: 'Eldara', avatar: 'E', class: 'character-1' },
-    'companion': { name: 'Theron', avatar: 'T', class: 'character-2' },
-    'stranger': { name: 'Mystic', avatar: 'M', class: 'character-3' },
+    'guide': { name: 'Guide', avatar: 'G', class: 'guide' },
+    'companion': { name: 'Companion', avatar: 'C', class: 'companion' },
+    'stranger': { name: 'Stranger', avatar: 'S', class: 'stranger' },
     'user': { name: 'You', avatar: 'Y', class: 'user' }
   };
 
@@ -57,9 +54,6 @@
     
     // Handle initial responsive state
     handleResize();
-    
-    // Add smooth scrolling behavior
-    document.documentElement.style.scrollBehavior = 'smooth';
   }
 
   function initializeKeyboardNavigation() {
@@ -112,14 +106,9 @@
       if (!isActive) {
         sidebar.classList.add('active');
         overlay.classList.add('active');
-        // Focus management for accessibility
-        sidebar.setAttribute('aria-hidden', 'false');
-        var firstFocusable = sidebar.querySelector('button, [tabindex="0"]');
-        if (firstFocusable) firstFocusable.focus();
       }
     } else {
       sidebar.classList.toggle('hidden');
-      sidebar.setAttribute('aria-hidden', sidebar.classList.contains('hidden'));
     }
   }
 
@@ -135,14 +124,9 @@
       if (!isActive) {
         sidebar.classList.add('active');
         overlay.classList.add('active');
-        // Focus management for accessibility
-        sidebar.setAttribute('aria-hidden', 'false');
-        var firstFocusable = sidebar.querySelector('button, [tabindex="0"]');
-        if (firstFocusable) firstFocusable.focus();
       }
     } else {
       sidebar.classList.toggle('hidden');
-      sidebar.setAttribute('aria-hidden', sidebar.classList.contains('hidden'));
     }
   }
 
@@ -154,10 +138,6 @@
     progressSidebar.classList.remove('active');
     contextSidebar.classList.remove('active');
     overlay.classList.remove('active');
-    
-    // Reset aria-hidden for accessibility
-    progressSidebar.setAttribute('aria-hidden', 'true');
-    contextSidebar.setAttribute('aria-hidden', 'true');
   }
 
   function toggleTheme() {
@@ -178,9 +158,6 @@
     
     // Save theme preference
     localStorage.setItem('fullquest-theme', currentTheme);
-    
-    // Show notification
-    showNotification('Theme changed to ' + currentTheme + ' mode', 'success');
   }
 
   function loadTheme() {
@@ -201,46 +178,6 @@
     }
   }
 
-  function showNotification(message, type) {
-    // Create a simple notification system
-    var notification = document.createElement('div');
-    notification.className = 'notification notification-' + type;
-    notification.textContent = message;
-    notification.style.cssText = `
-      position: fixed;
-      top: 80px;
-      right: 20px;
-      background: var(--secondary-bg);
-      color: var(--text-primary);
-      padding: 12px 20px;
-      border-radius: 8px;
-      box-shadow: 0 4px 16px var(--shadow-medium);
-      border-left: 4px solid var(--golden-accent);
-      z-index: 3000;
-      transform: translateX(100%);
-      transition: transform 0.3s ease;
-      max-width: 300px;
-      font-size: 14px;
-    `;
-    
-    document.body.appendChild(notification);
-    
-    // Animate in
-    setTimeout(function() {
-      notification.style.transform = 'translateX(0)';
-    }, 100);
-    
-    // Remove after 3 seconds
-    setTimeout(function() {
-      notification.style.transform = 'translateX(100%)';
-      setTimeout(function() {
-        if (notification.parentNode) {
-          notification.parentNode.removeChild(notification);
-        }
-      }, 300);
-    }, 3000);
-  }
-
   function displayChatContent(content) {
     var chatContainer = document.getElementById('content');
     
@@ -252,7 +189,7 @@
       showTypingIndicator(messageData.character);
       
       // Simulate realistic typing delay
-      var typingDelay = Math.min(messageData.text.length * 50, 3000) + Math.random() * 1000;
+      var typingDelay = Math.min(messageData.text.length * 30, 2000) + Math.random() * 500;
       setTimeout(function() {
         hideTypingIndicator();
         addChatMessage(messageData);
@@ -274,32 +211,11 @@
     // Clean up the text
     text = text.replace(/^[#\s]+/, '').trim();
     
-    // Add some fantasy flavor to narration
-    if (character === 'narrator') {
-      text = enhanceNarrationText(text);
-    }
-    
     return {
       character: character,
       text: text,
       timestamp: new Date()
     };
-  }
-
-  function enhanceNarrationText(text) {
-    // Add some mystical elements to narration
-    var enhancements = [
-      { pattern: /\bbegin/gi, replacement: '✦ begin' },
-      { pattern: /\bmagic/gi, replacement: '✨ magic' },
-      { pattern: /\bquest/gi, replacement: '⚔️ quest' },
-      { pattern: /\bmystery/gi, replacement: '🔮 mystery' }
-    ];
-    
-    enhancements.forEach(function(enhancement) {
-      text = text.replace(enhancement.pattern, enhancement.replacement);
-    });
-    
-    return text;
   }
 
   function addChatMessage(messageData) {
@@ -320,11 +236,6 @@
     html += '<div class="message-content">';
     if (messageData.character !== 'narrator' && messageData.character !== 'user') {
       html += '<span class="character-name">' + characterInfo.name + '</span>';
-    }
-    
-    // Add narration icon for narrator messages
-    if (messageData.character === 'narrator') {
-      html += '<div class="narration-icon"><span uk-icon="icon: star; ratio: 1.5"></span></div>';
     }
     
     html += messageData.text;
@@ -397,11 +308,10 @@
       if (choice.canChoose === false) {
         button.className += ' unavailable';
         button.disabled = true;
-        button.setAttribute('aria-disabled', 'true');
       }
       
       var choiceText = choice.title || choice.text || 'Continue';
-      button.innerHTML = '<span uk-icon="icon: chevron-right" class="choice-icon"></span><span>' + choiceText + '</span>';
+      button.innerHTML = '<span>' + choiceText + '</span>';
       
       if (choice.canChoose !== false) {
         button.addEventListener('click', function() {
@@ -440,13 +350,11 @@
     // Clear choices with animation
     var choicesContainer = document.getElementById('choices-container');
     choicesContainer.style.opacity = '0';
-    choicesContainer.style.transform = 'translateY(20px)';
     
     setTimeout(function() {
       choicesContainer.innerHTML = '';
       choicesContainer.style.display = 'none';
       choicesContainer.style.opacity = '1';
-      choicesContainer.style.transform = 'translateY(0)';
     }, 200);
     
     // Execute choice
@@ -485,24 +393,16 @@
       var icon = progressItems[index].querySelector('.progress-icon');
       if (icon) {
         icon.setAttribute('uk-icon', 'icon: check');
-        icon.className = 'progress-icon completed';
       }
-      
-      // Add completion animation
-      progressItems[index].style.transform = 'scale(1.05)';
-      setTimeout(function() {
-        progressItems[index].style.transform = 'scale(1)';
-      }, 200);
-      
-      showNotification('Progress updated!', 'success');
     }
   }
 
   function updateContext(messageData) {
     // Update location based on message content
-    var locationCard = document.querySelector('.location-card');
-    if (locationCard && messageData.text.includes('forest')) {
-      updateLocation('Enchanted Forest', 'A mystical woodland where ancient magic flows through every leaf and branch.');
+    var locationInfo = document.querySelector('.location-info');
+    if (locationInfo && messageData.text.includes('forest')) {
+      locationInfo.querySelector('h5').textContent = 'Dark Forest';
+      locationInfo.querySelector('p').textContent = 'A mysterious woodland where shadows dance between ancient trees.';
     }
     
     // Update recent events
@@ -511,34 +411,20 @@
       var newEvent = document.createElement('div');
       newEvent.className = 'event-item';
       newEvent.innerHTML = '<span uk-icon="icon: history" class="event-icon"></span><span class="event-text">' + 
-                           messageData.text.substring(0, 50) + (messageData.text.length > 50 ? '...' : '') + '</span>';
+                           messageData.text.substring(0, 40) + (messageData.text.length > 40 ? '...' : '') + '</span>';
       
       eventsList.insertBefore(newEvent, eventsList.firstChild);
       
-      // Keep only the last 5 events
+      // Keep only the last 3 events
       var events = eventsList.querySelectorAll('.event-item');
-      if (events.length > 5) {
+      if (events.length > 3) {
         eventsList.removeChild(events[events.length - 1]);
       }
     }
   }
 
-  function updateLocation(name, description) {
-    var locationInfo = document.querySelector('.location-info');
-    if (locationInfo) {
-      locationInfo.querySelector('h5').textContent = name;
-      locationInfo.querySelector('p').textContent = description;
-    }
-  }
-
-  // Enhanced save/load system with notifications
+  // Enhanced save/load system
   var TITLE = "Full Quest" + '_' + "storyde";
-
-  window.quickSave = function() {
-    var saveString = JSON.stringify(window.dendryUI.dendryEngine.getExportableState());
-    localStorage[TITLE+'_save_q'] = saveString;
-    showNotification('Game saved successfully!', 'success');
-  };
 
   window.saveSlot = function(slot) {
     var saveString = JSON.stringify(window.dendryUI.dendryEngine.getExportableState());
@@ -547,8 +433,7 @@
     var date = new Date(Date.now());
     date = scene + '\n(' + date.toLocaleString(undefined, DateOptions) + ')';
     localStorage[TITLE+'_save_timestamp_' + slot] = date;
-    window.populateSaveSlots(slot + 1, 2);
-    showNotification('Game saved to slot ' + slot + '!', 'success');
+    window.populateSaveSlots(8, 2);
   };
 
   window.autosave = function() {
@@ -564,17 +449,7 @@
     var date = new Date(Date.now());
     date = scene + '\n(' + date.toLocaleString(undefined, DateOptions) + ')';
     localStorage[TITLE+'_save_timestamp_' + slot] = date;
-    window.populateSaveSlots(slot + 1, 2);
-  };
-
-  window.quickLoad = function() {
-    if (localStorage[TITLE+'_save_q']) {
-      var saveString = localStorage[TITLE+'_save_q'];
-      window.dendryUI.dendryEngine.setState(JSON.parse(saveString));
-      showNotification('Game loaded successfully!', 'success');
-    } else {
-      showNotification('No quick save available.', 'warning');
-    }
+    window.populateSaveSlots(8, 2);
   };
 
   window.loadSlot = function(slot) {
@@ -582,9 +457,6 @@
       var saveString = localStorage[TITLE+'_save_' + slot];
       window.dendryUI.dendryEngine.setState(JSON.parse(saveString));
       window.hideSaveSlots();
-      showNotification('Game loaded from slot ' + slot + '!', 'success');
-    } else {
-      showNotification('No save available in slot ' + slot + '.', 'warning');
     }
   };
 
@@ -592,10 +464,7 @@
     if (localStorage[TITLE+'_save_' + slot]) {
       localStorage[TITLE+'_save_' + slot] = '';
       localStorage[TITLE+'_save_timestamp_' + slot] = '';
-      window.populateSaveSlots(slot + 1, 2);
-      showNotification('Save deleted from slot ' + slot + '.', 'success');
-    } else {
-      showNotification('No save available in slot ' + slot + '.', 'warning');
+      window.populateSaveSlots(8, 2);
     }
   };
 
@@ -644,14 +513,6 @@
     save_element.style.display = "flex";
     window.populateSaveSlots(8, 2);
     
-    // Focus management
-    var firstButton = save_element.querySelector('button');
-    if (firstButton) {
-      setTimeout(function() {
-        firstButton.focus();
-      }, 100);
-    }
-    
     if (!save_element.onclick) {
       save_element.onclick = function(evt) {
         var target = evt.target;
@@ -668,110 +529,6 @@
     save_element.style.display = "none";
   };
 
-  window.showStats = function() {
-    if (window.dendryUI.dendryEngine.state.sceneId.startsWith('stats')) {
-      window.dendryUI.dendryEngine.goToScene('backSpecialScene');
-    } else {
-      window.dendryUI.dendryEngine.goToScene('stats');
-    }
-  };
-
-  window.showOptions = function() {
-    var options_element = document.getElementById('options');
-    window.populateOptions();
-    options_element.style.display = "flex";
-    
-    // Focus management
-    var firstInput = options_element.querySelector('input');
-    if (firstInput) {
-      setTimeout(function() {
-        firstInput.focus();
-      }, 100);
-    }
-    
-    if (!options_element.onclick) {
-      options_element.onclick = function(evt) {
-        var target = evt.target;
-        var options_element = document.getElementById('options');
-        if (target == options_element) {
-          window.hideOptions();
-        }
-      };
-    }
-  };
-
-  window.hideOptions = function() {
-    var options_element = document.getElementById('options');
-    options_element.style.display = "none";
-  };
-
-  window.disableBg = function() {
-    window.dendryUI.disable_bg = true;
-    document.body.style.backgroundImage = 'none';
-    window.dendryUI.saveSettings();
-    showNotification('Backgrounds disabled', 'success');
-  };
-
-  window.enableBg = function() {
-    window.dendryUI.disable_bg = false;
-    window.dendryUI.setBg(window.dendryUI.dendryEngine.state.bg);
-    window.dendryUI.saveSettings();
-    showNotification('Backgrounds enabled', 'success');
-  };
-
-  window.disableAnimate = function() {
-    window.dendryUI.animate = false;
-    window.dendryUI.saveSettings();
-    showNotification('Animations disabled', 'success');
-  };
-
-  window.enableAnimate = function() {
-    window.dendryUI.animate = true;
-    window.dendryUI.saveSettings();
-    showNotification('Animations enabled', 'success');
-  };
-
-  window.disableAnimateBg = function() {
-    window.dendryUI.animate_bg = false;
-    window.dendryUI.saveSettings();
-    showNotification('Background animations disabled', 'success');
-  };
-
-  window.enableAnimateBg = function() {
-    window.dendryUI.animate_bg = true;
-    window.dendryUI.saveSettings();
-    showNotification('Background animations enabled', 'success');
-  };
-
-  window.populateOptions = function() {
-    var disable_bg = window.dendryUI.disable_bg;
-    var animate = window.dendryUI.animate;
-    var animate_bg = window.dendryUI.animate_bg;
-    if (disable_bg) {
-      document.getElementById('backgrounds_no').checked = true;
-    } else {
-      document.getElementById('backgrounds_yes').checked = true;
-    }
-    if (animate) {
-      document.getElementById('animate_yes').checked = true;
-    } else {
-      document.getElementById('animate_no').checked = true;
-    }
-    if (animate_bg) {
-      document.getElementById('animate_bg_yes').checked = true;
-    } else {
-      document.getElementById('animate_bg_no').checked = true;
-    }
-  };
-
-  window.displayText = function(text) {
-    return text;
-  };
-
-  window.handleSignal = function(signal, event, scene_id) {
-    // Handle game signals for enhanced interactivity
-  };
-
   window.onNewPage = function() {
     var scene = window.dendryUI.dendryEngine.state.sceneId;
     if (scene != 'root') {
@@ -779,48 +536,7 @@
     }
   };
 
-  window.updateSidebar = function() {
-    // Update context sidebar with current game state
-    var contextContent = document.getElementById('context-content');
-    var scene = dendryUI.game.scenes.status;
-    if (scene) {
-      var displayContent = dendryUI.dendryEngine._makeDisplayContent(scene.content, true);
-      // Update context with enhanced formatting
-      updateContextDisplay(displayContent);
-    }
-  };
-
-  function updateContextDisplay(content) {
-    // Enhanced context display with better formatting
-    var contextContent = document.getElementById('context-content');
-    if (contextContent && content) {
-      // Process the content for better display
-      var processedContent = content.replace(/\n/g, '<br>');
-      var contextHtml = '<div class="context-section">';
-      contextHtml += '<h4>Game Status</h4>';
-      contextHtml += '<div class="status-content">' + processedContent + '</div>';
-      contextHtml += '</div>';
-      
-      // Update only the status section, preserve other sections
-      var existingContent = contextContent.innerHTML;
-      var statusRegex = /<div class="context-section">[\s\S]*?<h4>Game Status<\/h4>[\s\S]*?<\/div>/;
-      if (statusRegex.test(existingContent)) {
-        contextContent.innerHTML = existingContent.replace(statusRegex, contextHtml);
-      } else {
-        contextContent.innerHTML += contextHtml;
-      }
-    }
-  }
-
-  window.onDisplayContent = function() {
-    window.updateSidebar();
-  };
-
   window.dendryModifyUI = main;
-  console.log("Fantasy Chat Messenger Interface Loaded - Full Quest v2.0");
-
-  window.onload = function() {
-    window.dendryUI.loadSettings();
-  };
+  console.log("Adventure Chat Interface Loaded - Full Quest");
 
 }());
